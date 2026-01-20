@@ -61,7 +61,7 @@ body {
 }
 
 .assignment a {
-  color: #000;
+  color: #772424;
   text-decoration: none;
 }
 
@@ -78,14 +78,3 @@ body {
   margin-top: 0.5em;
 }
 
-
-body {
-  background-color: #1e1e1e;
-  color: #d4d4d4;
-  font-family: monospace;
-  padding: 20px;
-}
-.keyword { color: #569CD6; font-weight: bold; }
-.comment { color: #6A9955; font-style: italic; }
-.number { color: #B5CEA8; }
-.function { color: #DCDCAA; }
