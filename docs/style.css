@@ -38,6 +38,7 @@ h2 {
 
 .header {
   display: flex;
+  flex-direction: column;
   gap: 1em;
   margin-top: 1em;
 }
@@ -47,9 +48,14 @@ h2 {
   object-fit: cover;
 }
 
+body {
+  column-count: 1;
+  font-family: Arial, sans-serif;
+}
+
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: 1fr;
   gap: 1em;
   margin-top: 2em;
 }
@@ -71,3 +77,15 @@ h2 {
 .assignment p {
   margin-top: 0.5em;
 }
+
+
+body {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  font-family: monospace;
+  padding: 20px;
+}
+.keyword { color: #569CD6; font-weight: bold; }
+.comment { color: #6A9955; font-style: italic; }
+.number { color: #B5CEA8; }
+.function { color: #DCDCAA; }

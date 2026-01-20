@@ -2,17 +2,105 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <title>Arduino Code Highlight</title>
+    <style>
+      body {
+        color: #000000;
+        font-family: monospace;
+        padding: 20px;
+      }
+      .keyword { color: #569CD6; font-weight: bold; }
+      .comment { color: #6A9955; font-style: italic; }
+      .number { color: #B5CEA8; }
+      .function { color: #FF8303; }
+    </style>
+    </head>
+    <body>
     <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
 
-    <title>Example Student's HCDE 439 Physical Computing Page!</title>
+    <title>Athena Ortega's HCDE 439 Physical Computing Page!</title>
 
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>Example Student's Assignment 1!</h1>
+    <h1>Athena Ortega's Assignment 1!</h1>
     <div class="header">
-      <img src="red-panda.jpg" />
-      <p>Here is all the documentation for assignment 1!</p>
+      <img src="A1_Blinky.gif" />
+      <p>In Assignment 1, I programmed a mini set of holiday lights!</p>
+      <br>
+
+      <h2>Here is all the documentation for assignment 1!</h2>
+
+      <h3>Overview Photo:</h3>
+      <img src="A1_Overview_Photo.png" />
+      <p> I chose 330 Ω resistors because after calculating the resistance using Ohm's Law
+        and taking into account the voltage drops across the resistors, I found that 330 Ω 
+        would allow the current that passes through the circuit to stay under 40mA. 
+      </p>
+
+
+      <h3>Schematic:</h3>
+      <img src="A1_Schematic.png" />
+      <p> Here is the schematic diagram I drew for this assignment. 
+      </p>
+      <br>
+
+      <h5>Code Snippet</h5>
+      <p>
+
+        <pre><code>
+          <span class="comment">//initializing the timer value, to set a constant of a given value of time</span>
+          <span class="keyword">int</span> timer = <span class="number">180</span>;
+          
+          <span class="keyword">void</span> <span class="function">setup</span>() {
+              <span class="comment">//initializing a for loop to assign each LED to a certain value of a pin</span>
+              <span class="comment">//for loop will increment by a value of 1</span>
+              <span class="keyword">for</span>(<span class="keyword">int</span> thisPin = <span class="number">10</span>; thisPin &lt; <span class="number">13</span>; thisPin++){
+                  <span class="comment">//this is initializing each pin to an output of the LED</span>
+                  <span class="function">pinMode</span>(thisPin, <span class="keyword">OUTPUT</span>);
+              }
+          }
+          
+          <span class="comment">//initializing a loop to repeat the action of the blinking</span>
+          <span class="keyword">void</span> <span class="function">loop</span>() {
+              <span class="comment">//initializing a for loop to iterate through each pin</span>
+              <span class="keyword">for</span>(<span class="keyword">int</span> thisPin = <span class="number">10</span>; thisPin &lt; <span class="number">13</span>; thisPin++){
+                  <span class="comment">//this sets the pin to the HIGH value in order to turn the assigned LED at this specific pin ON</span>
+                  <span class="function">digitalWrite</span>(thisPin, <span class="keyword">HIGH</span>);
+                  <span class="comment">//this will prolong the ON state of the pin for the assigned duration of time</span>
+                  <span class="function">delay</span>(timer);
+                  <span class="comment">//this sets the pin to the LOW value in order to turn the assigned LED at this specific pin OFF</span>
+                  <span class="function">digitalWrite</span>(thisPin, <span class="keyword">LOW</span>);
+                  <span class="comment">//this will prolong the OFF state of the pin for the assigned duration of time</span>
+                  <span class="function">delay</span>(timer);
+              }
+          }
+          </code></pre>
+          
+
+      </p>
+      <br>
+      <h3>Additional Questions</h4>
+      <br>
+
+      <h4>Question 1: </h4>
+      <img src="A1_Voltage_over_Time.jpeg" />
+      <p> Above is the figure for the Voltage over Time for each LED.</p>
+      <br>
+
+      <h4>Question 2:</h4>
+      <p>I was able to blink 3 LEDs independently with my Arduino. I used 330 Ω resistors
+        as I didn't want to damage the Arduino by having a higher current. 
+        This drew approximately 27-29 mA of current.
+      </p>
+      <br>
+
+      <h4>Question 3:</h4>
+      <p>The only use of AI in this assignment was to assist with converting the formatting of the code snippet. There was no other use of AI for this assignment 
+        aside from formatting.
+      </p>
+      <br>
+
     </div>
   </body>
 </html>
