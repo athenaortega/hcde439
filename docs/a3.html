@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Arduino Code Snippet Formatting</title>
+    <style> 
+
+      .keyword { color: #569CD6; font-weight: bold; }
+      .comment { color: #6A9955; font-style: italic; }
+      .number { color: #B5CEA8; }
+      .function { color: #FF8303; }
+    </style>
+    </head>
+    <body>
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+
+
+
+    <title>Athena Ortega's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Athena Ortega's Assignment 3</h1>
+    <div class="header">
+    
+      <img src= "A3_Input_Output.mp4"         />
+      </img>
+      <p>In Assignment 3, I created a prototype that changes light based on a change in the surrounding light!</p>
+      <br>
+
+      <h2>Here is all the documentation for assignment 3!</h2>
+
+
+      <h3>Calculation:</h3>
+      <img src= "A3_Calculation.png" />
+      <p> Above are my calculations for the current, which determined the value of resistors I used.
+        I chose 220 Ω resistors because after calculating the resistance using Ohm's Law
+        and taking into account the voltage drops across the resistors, I found that 220 Ω 
+        would allow the current that passes through the circuit to stay under 40mA. 
+      </p>
+
+      <h3>Schematic:</h3>
+      <img src= "A3_Schematic.png" />
+      <p> Here is the schematic diagram I drew for this assignment. 
+      </p>
+      <br>
+
+      <h3>Overview Photo:</h3>
+      <img src="A3_Overview_Photo_Final.png" />
+      <p> Here is a photo of the circuit I put together, based on my calculations.
+      </p>
+
+
+      <h5>Code Snippet</h5>
+      <p>
+        <pre><code>
+          <span class="comment">//declare the analog pin connected to the voltage divider</span>
+          <span class="keyword">int</span> sensorPin = <span class="number">A0</span>;
+          <span class="comment">//declare the first LED connected to pin 10</span>
+          <span class="keyword">int</span> ledOne = <span class="number">10</span>;
+          <span class="comment">//declare the second LED connected to pin 11</span>
+          <span class="keyword">int</span> ledTwo = <span class="number">11</span>;
+      
+          <span class="comment">//set the initial sensor value to 0</span>
+          <span class="keyword">int</span> sensorValue = <span class="number">0</span>;
+          <span class="comment">//set the initial brightness to 0</span>
+          <span class="keyword">int</span> brightness = <span class="number">0</span>;
+      
+          <span class="keyword">void</span> <span class="function">setup</span>() {
+              <span class="comment">//Enable serial output for ease of reading output</span>
+              <span class="function">Serial.begin</span>(<span class="number">9600</span>);
+              <span class="comment">//Set led one's pin as an output</span>
+              <span class="function">pinMode</span>(ledOne, <span class="keyword">OUTPUT</span>);
+              <span class="comment">//Set led two's pin as an output</span>
+              <span class="function">pinMode</span>(ledTwo, <span class="keyword">OUTPUT</span>);
+          }
+      
+          <span class="keyword">void</span> <span class="function">loop</span>() {
+              <span class="comment">//Read the voltage at the divider and store the ADC value</span>
+              sensorValue = <span class="function">analogRead</span>(sensorPin);
+      
+              <span class="comment">//map sensor values from expected light range to LED brightness</span>
+              brightness = <span class="function">map</span>(sensorValue, <span class="number">200</span>, <span class="number">850</span>, <span class="number">0</span>, <span class="number">255</span>);
+              <span class="comment">//constrain brightness so it never exceeds PWM limits</span>
+              brightness = <span class="function">constrain</span>(brightness, <span class="number">0</span>, <span class="number">255</span>);
+      
+              <span class="comment">//if environment is dark, run the following code</span>
+              <span class="keyword">if</span>(sensorValue &lt; <span class="number">400</span>) {
+                  <span class="comment">//led one will turn off</span>
+                  <span class="function">digitalWrite</span>(ledOne, <span class="keyword">LOW</span>);
+                  <span class="comment">//led two will light up</span>
+                  <span class="function">digitalWrite</span>(ledTwo, <span class="keyword">HIGH</span>);
+      
+                  <span class="comment">//Print serial output and sensor value</span>
+                  <span class="function">Serial.print</span>(<span class="string">"Darkness Detected. Sensor value: "</span>);
+                  <span class="function">Serial.println</span>(sensorValue);
+              } <span class="keyword">else</span> {
+                  <span class="comment">//led one will turn on</span>
+                  <span class="function">analogWrite</span>(ledOne, <span class="keyword">HIGH</span>);
+                  <span class="comment">//led two will turn off</span>
+                  <span class="function">digitalWrite</span>(ledTwo, <span class="keyword">LOW</span>);
+      
+                  <span class="comment">//Print serial output and sensor value</span>
+                  <span class="function">Serial.print</span>(<span class="string">"Light detected. Sensor value: "</span>);
+                  <span class="function">Serial.println</span>(sensorValue);
+              }
+      
+              <span class="comment">//Delay to give enough time to read and process serial output</span>
+              <span class="function">delay</span>(<span class="number">200</span>);
+          }
+        </code></pre>
+      </p>
+      
+      
+      
+
+
+
+      <br>
+      <h3>Additional Questions</h4>
+      <br>
+
+
+      <img src="A3_Additional Questions.png" />
+
+
+    </div>
+  </body>
+</html>
