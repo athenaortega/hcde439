@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Arduino Code Snippet Formatting</title>
+    <style> 
+
+      .keyword { color: #569CD6; font-weight: bold; }
+      .comment { color: #6A9955; font-style: italic; }
+      .number { color: #B5CEA8; }
+      .function { color: #FF8303; }
+    </style>
+    </head>
+    <body>
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+ 
+
+
+
+    <title>Athena Ortega's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Athena Ortega's Assignment 4</h1>
+    <div class="header">
+    
+        <video controls width="600" height="400">
+            <source src="A4_Video.mp4" type="video/mp4">
+        </video>
+     
+     
+        <p>In Assignment 4, I created a prototype where the motor moves when the sensor is submerged into water. </p>
+      <br>
+
+      <h2>Here is all the documentation for assignment 4!</h2>
+
+
+      <h3>Overview Photo:</h3>
+      <img src="A4_Overview_Circuit.png" />
+      <img src="A4_Overview_Water.png" />
+      <p> Here is a photo of the circuit I put together. The first photo is an overview of the circuit, 
+        and the second shows the water sensor submerged in water.     
+      </p>
+
+
+      <h3>Schematic:</h3>
+      <img src= "A4_Schematic.png" />
+      <p> Here is the schematic diagram I drew for this assignment. 
+        This schematic includes the water sensor as the input and the servo motor as the output. 
+        I chose 220 Ω resistors because after calculating the resistance using Ohm's Law
+        and taking into account the voltage drops across the resistors, I found that 220 Ω 
+        would allow the current that passes through the circuit to stay under 40mA. 
+      </p>
+      <br>
+
+
+
+
+      <h5>Code Snippet</h5>
+      <p>
+        <pre><code>
+            <span class="comment">//Include the Servo library</span>
+            <span class="keyword">#include</span> &lt;<span class="string">Servo.h</span>&gt;
+            
+            <span class="comment">//declare the analog pin connected to the water sensor</span>
+            <span class="keyword">int</span> waterSensorPin = <span class="number">A0</span>;
+            <span class="comment">//declare the servo pin</span>
+            <span class="keyword">int</span> servoPin = <span class="number">9</span>;
+            
+            <span class="comment">//create the servo object</span>
+            <span class="keyword">Servo</span> myServo;
+            
+            <span class="comment">//set the sensor reading variable</span>
+            <span class="keyword">int</span> sensorValue = <span class="number">0</span>;
+            <span class="comment">//set servo position variable</span>
+            <span class="keyword">int</span> servoPos = <span class="number">0</span>;
+            
+            <span class="keyword">void</span> <span class="function">setup</span>() {
+                <span class="comment">//initialize serial communication</span>
+                <span class="function">Serial.begin</span>(<span class="number">9600</span>);
+                <span class="comment">//attach the servo to the pin</span>
+                <span class="function">myServo.attach</span>(servoPin);
+            }
+            
+            <span class="keyword">void</span> <span class="function">loop</span>() {
+                <span class="comment">//read the water sensor value</span>
+                sensorValue = <span class="function">analogRead</span>(waterSensorPin);
+            
+                <span class="comment">//map the sensor value to servo position (0-180 degrees)</span>
+                servoPos = <span class="function">map</span>(sensorValue, <span class="number">200</span>, <span class="number">800</span>, <span class="number">0</span>, <span class="number">180</span>);
+                servoPos = <span class="function">constrain</span>(servoPos, <span class="number">0</span>, <span class="number">180</span>);
+            
+                <span class="comment">//move the servo to the new position</span>
+                <span class="function">myServo.write</span>(servoPos);
+            
+                <span class="comment">//print sensor value and servo position to serial monitor</span>
+                <span class="function">Serial.print</span>(<span class="string">"Sensor: "</span>);
+                <span class="function">Serial.print</span>(sensorValue);
+                <span class="function">Serial.print</span>(<span class="string">", Servo: "</span>);
+                <span class="function">Serial.println</span>(servoPos);
+            
+                <span class="comment">//small delay for stability</span>
+                <span class="function">delay</span>(<span class="number">200</span>);
+            }
+            </code></pre>
+            
+      </p>
+      
+      
+      
+
+
+
+      <br>
+      <h3>Additional Questions</h4>
+      <br>
+
+
+      <img src="A4_Additional_Questions.png" />
+
+
+    </div>
+  </body>
+</html>
