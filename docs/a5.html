@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Arduino Code Snippet Formatting</title>
+    <style> 
+
+      .keyword { color: #569CD6; font-weight: bold; }
+      .comment { color: #6A9955; font-style: italic; }
+      .number { color: #B5CEA8; }
+      .function { color: #FF8303; }
+    </style>
+    </head>
+    <body>
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+
+
+
+    <title>Athena Ortega's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Athena Ortega's Assignment 5</h1>
+    <div class="header">
+      <img src="A5.gif" />
+      </img>
+      <p>In Assignment 5, I used a MOSFET transistor and a sensor to read humidity!</p>
+      <br>
+
+      <h2>Here is all the documentation for assignment 5!</h2>
+
+
+      <h3>Schematic:</h3>
+      <img src="A5_Question_A_Schematic.png" />
+      <p> Here is the schematic diagram I drew for this assignment. 
+      </p>
+      <br>
+
+      <h3>Overview Photo:</h3>
+      <img src="A5_Overview.png" />
+      <p> Here is a photo of the circuit I put together, where you can see the humidity sensor, the MOSFET, and the fan that is attached to the DC motor.
+        The fan turns on when a particular humidity above 20% occurs. Normally, I would have the humidity higher,
+        but to visualize the fan working for this assignment, I had to lower the humidity. 
+        Normally, the fan should only power at a humidity of 90% or higher, like the type of fan that powers in a bathroom after a hot shower.
+      </p>
+
+
+      <h5>Code Snippet</h5>
+      <p>
+        <pre><code>
+            <span class="comment">//Input the library for the humidity sensor</span>
+            <span class="keyword">#include</span> <span class="string">&lt;dht.h&gt;</span>
+          
+            <span class="comment">//Initializing sensor object for the humidity sensor</span>
+            dht DHT;
+          
+            <span class="comment">//Setting up the pins to be connected to the sensor and the DC motor</span>
+            <span class="keyword">#define</span> DHT11_PIN <span class="number">7</span>
+            <span class="keyword">#define</span> DHTLIB_OK <span class="number">0</span>
+            <span class="keyword">#define</span> fan <span class="number">11</span>
+          
+            <span class="keyword">const int</span> mosfetPin = <span class="number">9</span>;
+          
+            <span class="comment">//Setting up the output for the MOSFET and the motor</span>
+            <span class="keyword">void</span> <span class="function">setup</span>() {
+              <span class="function">pinMode</span>(mosfetPin, <span class="keyword">OUTPUT</span>);
+              <span class="function">pinMode</span>(fan, <span class="keyword">OUTPUT</span>);
+              <span class="comment">//Setting up serial for debugging and to understand what values are the output for the sensor.</span>
+              <span class="function">Serial.begin</span>(<span class="number">9600</span>);
+            }
+          
+            <span class="comment">//Main loop to execute function</span>
+            <span class="comment">//Function: This fan operates when the humidity is greater than 20%.</span>
+            <span class="comment">//As mentioned in the assignment, typically, I would prefer if the fan only operated at a higher humidity.</span>
+            <span class="comment">//However, for this assignment, and in the settings where I was testing this circuit, the humidity of the room was much lower,</span>
+            <span class="comment">//so I had to lower the required humidity so that I could show that the DC Motor &amp; fan does work when the humidity sensor is able to take in a reading.</span>
+            <span class="keyword">void</span> <span class="function">loop</span>() {
+          
+              <span class="comment">//Initializing the value that is to be read from the humidity sensor</span>
+              <span class="keyword">int</span> humidVal = DHT.<span class="function">read11</span>(DHT11_PIN);
+          
+              <span class="comment">//Check if the value is a valid value that is read from the humidity sensor</span>
+              <span class="keyword">if</span> (humidVal == DHTLIB_OK) {
+          
+                <span class="comment">//Establish the decimal value to be read from the humidity sensor</span>
+                <span class="keyword">float</span> humidity = DHT.humidity;
+          
+                <span class="comment">//Arranging format of printed output in the Serial Monitor</span>
+                <span class="function">Serial.print</span>(<span class="string">"Humidity recorded is = "</span>);
+                <span class="function">Serial.println</span>(humidity);
+          
+                <span class="comment">// High humidity, have the fan operate at a stronger power.</span>
+                <span class="comment">// MOSFET is turned on</span>
+                <span class="keyword">if</span> (humidity &gt; <span class="number">20</span>) {
+                  <span class="function">analogWrite</span>(mosfetPin, <span class="number">120</span>);
+                  <span class="function">analogWrite</span>(fan, <span class="number">60</span>);
+                }
+                <span class="comment">// Medium humidity, have the fan operate at a medium power.</span>
+                <span class="comment">// MOSFET is turned off</span>
+                <span class="keyword">else if</span> (humidity &gt;= <span class="number">10</span> &amp;&amp; humidity &lt; <span class="number">20</span>) {
+                  <span class="function">analogWrite</span>(mosfetPin, <span class="number">0</span>);
+                  <span class="function">analogWrite</span>(fan, <span class="number">40</span>);
+                }
+                <span class="comment">// Low humidity, fan is spinning at a slower speed.</span>
+                <span class="keyword">else</span> {
+                  <span class="function">analogWrite</span>(mosfetPin, <span class="number">0</span>);
+                  <span class="function">analogWrite</span>(fan, <span class="number">0</span>);
+                }
+          
+              } <span class="keyword">else</span> {
+                <span class="comment">//Error message printed if sensor does not work.</span>
+                <span class="function">Serial.println</span>(<span class="string">"Error has occurred. Sensor value cannot be read."</span>);
+              }
+          
+              <span class="comment">//3 second delay between humidity sensor readings and printed output</span>
+              <span class="function">delay</span>(<span class="number">3000</span>);
+            }
+          </code></pre>
+          
+      </p>
+      
+
+
+
+      <br>
+      <h3>Additional Questions</h4>
+      <br>
+
+      <h4>Question 1: </h4>
+      <p> Question 1 answer:
+        The absolute maximum amount of current between pins 2 and 3 is 47A.  </p>
+      <br>
+
+      <h4>Question 2:</h4>
+      <img src="A5_Question_2.png" />
+      <p>Datasheets:
+        DC Motor Datasheet: https://www.ti.com/lit/gpn/DRV8802
+        Flyback Diode DataSheet: https://www.vishay.com/docs/88503/1n4001.pdf
+        MOSFET Transistor Datasheet: https://www.infineon.com/assets/row/public/documents/24/49/infineon-irlz44n-datasheet-en.pdf
+        Arduino: https://docs.arduino.cc/resources/datasheets/A000066-datasheet.pdf
+      </p>
+      <br>
+
+      <h4>Question 3:</h4>
+      <img src="A5_Question_3_Schematic.png" />
+      <img src="A5_Question_3_Pseudocode.png" />
+      <br>
+
+
+      <h4>Question 4:</h4>
+      <p>The only use of AI in this assignment was to assist with converting the formatting of the code snippet. There was no other use of AI for this assignment 
+        aside from formatting.
+      </p>
+      <br>
+    </div>
+  </body>
