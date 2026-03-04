@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
 *,
 *::before,
@@ -21,60 +21,85 @@ svg {
 
 body {
   font-family: "Inter", sans-serif;
-  line-height: 1.5;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   max-width: 1000px;
-  padding: 2em;
+  padding: 2.5em;
   margin: auto;
+
+  /* Cozy matcha vibes */
+  background: #f4f7f2; /* soft green-tinted off‑white */
+  color: #2f3a2f; /* deep earthy green */
 }
 
 h1 {
-  font-weight: 800;
+  font-weight: 700;
+  color: #3e5c3e; /* matcha-strong green */
 }
 
 h2 {
-  font-weight: 700;
+  font-weight: 600;
+  color: #4a6b4a;
 }
 
 .header {
   display: flex;
   flex-direction: column;
-  gap: 1em;
+  gap: 1.2em;
   margin-top: 1em;
 }
 
 .header img {
   width: 50%;
   object-fit: cover;
-}
-
-body {
-  column-count: 1;
-  font-family: Arial, sans-serif;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(60, 80, 60, 0.15);
 }
 
 .grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1em;
+  gap: 1.2em;
   margin-top: 2em;
 }
 
+/* Links with cozy matcha accents */
 .assignment a {
-  color: #772424;
+  color: #5c7f5c;
   text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
 }
 
 .assignment a:hover {
-  color: #f06;
+  color: #8fbf8f; /* lighter matcha highlight */
 }
 
 .assignment img {
   aspect-ratio: 1;
   object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(70, 90, 70, 0.12);
 }
 
 .assignment p {
   margin-top: 0.5em;
+  color: #3a4a3a;
 }
 
+/* Optional: subtle card styling for each assignment */
+.assignment {
+  background: #ffffff;
+  padding: 1em;
+  border-radius: 12px;
+  border: 1px solid #e3e9e3;
+  box-shadow: 0 2px 6px rgba(60, 80, 60, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  width: 500px;
+  max-height: 800px;
+}
+
+.assignment:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(60, 80, 60, 0.12);
+}

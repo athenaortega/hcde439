@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Arduino Code Snippet Formatting</title>
+    <style> 
+
+      .keyword { color: #569CD6; font-weight: bold; }
+      .comment { color: #6A9955; font-style: italic; }
+      .number { color: #B5CEA8; }
+      .function { color: #FF8303; }
+    </style>
+    </head>
+    <body>
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+
+
+
+    <title>Athena Ortega's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Athena Ortega's Assignment 6</h1>
+    <div class="header">
+    
+      <img src= "A6_Final.gif"         />
+      </img>
+      <p>In Assignment 6, I created a prototype that changes the web screen's color based on the buttons you push!</p>
+      <br>
+
+      <h2>Here is all the documentation for assignment 6!</h2>
+
+
+      <h3>Calculation and Schematic:</h3>
+      <img src= "A6_Schematic_and_Calculations.png" />
+      <p> Above are my calculations for the current, which determined the value of resistors I used.
+        For the Red LED and Green LED, the calculated resistance, based on a recommended 20mA current draw from each pen, is 150 Ohms.
+        For the Blue LED, the calculated resistance is 80 Ohms.
+        For the three buttons, I used 10k Ohm resistors to bring the voltage to 0 when the switches are open.
+      </p>
+
+  
+
+      <h3>Overview Photo:</h3>
+      <img src="A6_Overview_Photo.png" />
+      <p> Here is a photo of the circuit I put together, based on my calculations.
+      </p>
+
+
+      <h3>Arduino Code</h3>
+      <p>
+        <pre><code>
+      <span class="comment">// Set the pin for the red LED</span>
+      <span class="keyword">const int</span> redPin = <span class="number">11</span>;
+      
+      <span class="comment">// Set the pin for the green LED</span>
+      <span class="keyword">const int</span> greenPin = <span class="number">10</span>;
+      
+      <span class="comment">// Set the pin for the blue LED</span>
+      <span class="keyword">const int</span> bluePin = <span class="number">9</span>;
+      
+      <span class="comment">// Set the pin for the red button</span>
+      <span class="keyword">const int</span> redButtonPin = <span class="number">5</span>;
+      
+      <span class="comment">// Set the pin for the green button</span>
+      <span class="keyword">const int</span> greenButtonPin = <span class="number">4</span>;
+      
+      <span class="comment">// Set the pin for the blue button</span>
+      <span class="keyword">const int</span> blueButtonPin = <span class="number">3</span>;
+      
+      <span class="comment">// Store the red button state</span>
+      <span class="keyword">int</span> redButtonState = <span class="number">0</span>;
+      
+      <span class="comment">// Store the green button state</span>
+      <span class="keyword">int</span> greenButtonState = <span class="number">0</span>;
+      
+      <span class="comment">// Store the blue button state</span>
+      <span class="keyword">int</span> blueButtonState = <span class="number">0</span>;
+      
+      <span class="keyword">void</span> <span class="function">setup</span>() {
+        <span class="comment">// Set the red LED pin as an output</span>
+        <span class="function">pinMode</span>(redPin, <span class="keyword">OUTPUT</span>);
+      
+        <span class="comment">// Set the green LED pin as an output</span>
+        <span class="function">pinMode</span>(greenPin, <span class="keyword">OUTPUT</span>);
+      
+        <span class="comment">// Set the blue LED pin as an output</span>
+        <span class="function">pinMode</span>(bluePin, <span class="keyword">OUTPUT</span>);
+      
+        <span class="comment">// Set the red button pin as an input</span>
+        <span class="function">pinMode</span>(redButtonPin, <span class="keyword">INPUT</span>);
+      
+        <span class="comment">// Set the green button pin as an input</span>
+        <span class="function">pinMode</span>(greenButtonPin, <span class="keyword">INPUT</span>);
+      
+        <span class="comment">// Set the blue button pin as an input</span>
+        <span class="function">pinMode</span>(blueButtonPin, <span class="keyword">INPUT</span>);
+      
+        <span class="comment">// Begin serial communication at 9600 baud</span>
+        <span class="function">Serial.begin</span>(<span class="number">9600</span>);
+      }
+      
+      <span class="keyword">void</span> <span class="function">loop</span>() {
+      
+        <span class="comment">// Check whether any serial data has arrived</span>
+        <span class="keyword">if</span> (<span class="function">Serial.available</span>()) {
+      
+          <span class="comment">// Read the incoming command until newline</span>
+          <span class="keyword">String</span> cmd = <span class="function">Serial.readStringUntil</span>(<span class="string">'\n'</span>);
+      
+          <span class="comment">// Remove whitespace and newline characters</span>
+          cmd.trim();
+      
+          <span class="comment">// If the command is "ALL_ON", turn on all LEDs</span>
+          <span class="keyword">if</span> (cmd == <span class="string">"ALL_ON"</span>) {
+            <span class="function">digitalWrite</span>(redPin, <span class="keyword">HIGH</span>);
+            <span class="function">digitalWrite</span>(greenPin, <span class="keyword">HIGH</span>);
+            <span class="function">digitalWrite</span>(bluePin, <span class="keyword">HIGH</span>);
+      
+            <span class="comment">// Keep all LEDs on briefly</span>
+            <span class="function">delay</span>(<span class="number">1000</span>);
+          }
+        }
+      
+        <span class="comment">// Read the red button state (0 or 1)</span>
+        redButtonState = <span class="function">digitalRead</span>(redButtonPin);
+      
+        <span class="comment">// Read the green button state</span>
+        greenButtonState = <span class="function">digitalRead</span>(greenButtonPin);
+      
+        <span class="comment">// Read the blue button state</span>
+        blueButtonState = <span class="function">digitalRead</span>(blueButtonPin);
+      
+        <span class="comment">// Set the red LED based on the button state</span>
+        <span class="function">digitalWrite</span>(redPin, redButtonState);
+      
+        <span class="comment">// Set the green LED based on the button state</span>
+        <span class="function">digitalWrite</span>(greenPin, greenButtonState);
+      
+        <span class="comment">// Set the blue LED based on the button state</span>
+        <span class="function">digitalWrite</span>(bluePin, blueButtonState);
+      
+        <span class="comment">// Send the red button state to p5.js</span>
+        <span class="function">Serial.print</span>(redButtonState);
+      
+        <span class="comment">// Send a comma separator</span>
+        <span class="function">Serial.print</span>(<span class="string">","</span>);
+      
+        <span class="comment">// Send the green button state</span>
+        <span class="function">Serial.print</span>(greenButtonState);
+      
+        <span class="comment">// Send another comma separator</span>
+        <span class="function">Serial.print</span>(<span class="string">","</span>);
+      
+        <span class="comment">// Send the blue button state and end the line</span>
+        <span class="function">Serial.println</span>(blueButtonState);
+      
+        <span class="comment">// Small delay to prevent overwhelming the serial buffer</span>
+        <span class="function">delay</span>(<span class="number">20</span>);
+      }
+        </code></pre>
+      </p>
+      
+      
+
+
+
+
+      <h3>p5.js Code</h3>
+      <p>
+        <pre><code>
+      <span class="comment">// Set the baud rate for Arduino communication</span>
+      <span class="keyword">const</span> BAUD_RATE = <span class="number">9600</span>;
+      
+      <span class="comment">// Create variables for the serial port and the UI buttons</span>
+      <span class="keyword">let</span> port, connectBtn, lightAllBtn;
+      
+      <span class="comment">// Store the button states coming from the Arduino</span>
+      <span class="keyword">let</span> redState = <span class="number">0</span>;
+      <span class="keyword">let</span> greenState = <span class="number">0</span>;
+      <span class="keyword">let</span> blueState = <span class="number">0</span>;
+      
+      <span class="function">function</span> <span class="function">setup</span>() {
+        <span class="comment">// Initialize the serial connection setup</span>
+        setupSerial();
+      
+        <span class="comment">// Create a full-screen drawing canvas</span>
+        createCanvas(windowWidth, windowHeight);
+      
+        <span class="comment">// Set the font family and size for on‑screen text</span>
+        textFont(<span class="string">"system-ui"</span>, <span class="number">32</span>);
+      
+        <span class="comment">// Use bold text styling</span>
+        textStyle(BOLD);
+      
+        <span class="comment">// Center-align all text horizontally and vertically</span>
+        textAlign(CENTER, CENTER);
+      
+        <span class="comment">// Create the on‑screen button that lights all LEDs</span>
+        lightAllBtn = createButton(<span class="string">"Light All LEDs"</span>);
+      
+        <span class="comment">// Position the button on the webpage</span>
+        lightAllBtn.position(<span class="number">10</span>, <span class="number">60</span>);
+      
+        <span class="comment">// Send a command to Arduino when the button is clicked</span>
+        lightAllBtn.mouseClicked(() => {
+          <span class="keyword">if</span> (port.opened()) {
+            port.write(<span class="string">"ALL_ON\n"</span>);
+            console.log(<span class="string">"Sent: ALL_ON"</span>);
+          }
+        });
+      }
+      
+      <span class="function">function</span> <span class="function">draw</span>() {
+        <span class="comment">// Check whether the serial port is open</span>
+        <span class="keyword">const</span> portIsOpen = checkPort();
+      
+        <span class="comment">// Stop drawing if the port is not connected</span>
+        <span class="keyword">if</span> (!portIsOpen) <span class="keyword">return</span>;
+      
+        <span class="comment">// Read a full line of text from Arduino</span>
+        <span class="keyword">let</span> str = port.readUntil(<span class="string">"\n"</span>);
+      
+        <span class="comment">// Ignore empty reads</span>
+        <span class="keyword">if</span> (str.length === <span class="number">0</span>) <span class="keyword">return</span>;
+      
+        <span class="comment">// Remove whitespace and newline characters</span>
+        str = str.trim();
+      
+        <span class="comment">// Log incoming serial data for debugging</span>
+        console.log(<span class="string">"Incoming:"</span>, str);
+      
+        <span class="comment">// Split the incoming CSV string into three values</span>
+        <span class="keyword">let</span> parts = str.split(<span class="string">","</span>);
+      
+        <span class="comment">// Validate that all three values exist</span>
+        <span class="keyword">if</span> (parts.length === <span class="number">3</span>) {
+          <span class="comment">// Convert the red button value to a number</span>
+          redState = Number(parts[<span class="number">0</span>]);
+      
+          <span class="comment">// Convert the green button value to a number</span>
+          greenState = Number(parts[<span class="number">1</span>]);
+      
+          <span class="comment">// Convert the blue button value to a number</span>
+          blueState = Number(parts[<span class="number">2</span>]);
+        }
+      
+        <span class="comment">// Convert button states (0 or 1) into RGB intensities</span>
+        <span class="keyword">let</span> r = redState * <span class="number">255</span>;
+        <span class="keyword">let</span> g = greenState * <span class="number">255</span>;
+        <span class="keyword">let</span> b = blueState * <span class="number">255</span>;
+      
+        <span class="comment">// Update the background color based on button states</span>
+        background(r, g, b);
+      
+        <span class="comment">// Set the text color to black</span>
+        fill(<span class="number">0</span>);
+      
+        <span class="comment">// Set the text size for labels</span>
+        textSize(<span class="number">24</span>);
+      
+        <span class="comment">// Display the raw incoming string</span>
+        text(<span class="string">`Buttons Pressed: ${str}`</span>, width / <span class="number">2</span>, <span class="number">40</span>);
+      
+        <span class="comment">// Display the red button state</span>
+        text(<span class="string">`Red: ${redState}`</span>, width / <span class="number">2</span>, <span class="number">80</span>);
+      
+        <span class="comment">// Display the green button state</span>
+        text(<span class="string">`Green: ${greenState}`</span>, width / <span class="number">2</span>, <span class="number">120</span>);
+      
+        <span class="comment">// Display the blue button state</span>
+        text(<span class="string">`Blue: ${blueState}`</span>, width / <span class="number">2</span>, <span class="number">160</span>);
+      }
+      
+      <span class="function">function</span> <span class="function">setupSerial</span>() {
+        <span class="comment">// Create a new serial port object</span>
+        port = createSerial();
+      
+        <span class="comment">// Attempt to reconnect to the last used serial port</span>
+        <span class="keyword">let</span> used = usedSerialPorts();
+        <span class="keyword">if</span> (used.length > <span class="number">0</span>) {
+          port.open(used[<span class="number">0</span>], BAUD_RATE);
+        }
+      
+        <span class="comment">// Create the connect/disconnect button</span>
+        connectBtn = createButton(<span class="string">"Connect to Arduino"</span>);
+      
+        <span class="comment">// Position the button on the webpage</span>
+        connectBtn.position(<span class="number">10</span>, <span class="number">10</span>);
+      
+        <span class="comment">// Assign the click handler for connecting/disconnecting</span>
+        connectBtn.mouseClicked(onConnectButtonClicked);
+      }
+      
+      <span class="function">function</span> <span class="function">checkPort</span>() {
+        <span class="comment">// If the port is not open, update UI and stop drawing</span>
+        <span class="keyword">if</span> (!port.opened()) {
+          connectBtn.html(<span class="string">"Connect to Arduino"</span>);
+          background(<span class="string">"grey"</span>);
+          <span class="keyword">return</span> <span class="keyword">false</span>;
+        }
+      
+        <span class="comment">// If the port is open, update the button label</span>
+        connectBtn.html(<span class="string">"Disconnect"</span>);
+      
+        <span class="comment">// Indicate that the port is open</span>
+        <span class="keyword">return</span> <span class="keyword">true</span>;
+      }
+      
+      <span class="function">function</span> <span class="function">onConnectButtonClicked</span>() {
+        <span class="comment">// Open the serial port if it is currently closed</span>
+        <span class="keyword">if</span> (!port.opened()) {
+          port.open(BAUD_RATE);
+        }
+      
+        <span class="comment">// Otherwise, close the serial port</span>
+        <span class="keyword">else</span> {
+          port.close();
+        }
+      }
+        </code></pre>
+      </p>
+
+      
+      
+      <br>
+      <h3>Additional Questions</h4>
+      <br>
+
+      <h4>AI Usage </h4>
+      <p> AI was used only to format the Arduino code to be readable on this webpage. </p>
+      <br>
+
+    </div>
+  </body>
+</html>
