@@ -1,0 +1,120 @@
+/* ------------------------------
+   GLOBAL PASTEL THEME
+------------------------------ */
+
+body {
+    margin: 0;
+    padding: 0;
+    background: #F7F3FF;
+    font-family: "Inter", "system-ui", sans-serif;
+    color: #4A4458;
+    overflow: hidden;
+  }
+  
+  /* ------------------------------
+     CANVAS BEHIND UI
+  ------------------------------ */
+  
+  canvas {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+  
+  /* ------------------------------
+     ANIMATIONS
+  ------------------------------ */
+  
+  @keyframes fadeUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes softPop {
+    0% { transform: scale(0.95); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  
+  /* ------------------------------
+     PASTEL CARD BEHIND BUTTONS
+  ------------------------------ */
+  
+  #ui-card {
+    position: absolute;
+    top: 75%; /* keeps buttons below p5 text */
+    left: 50%;
+    transform: translate(-50%, -50%);
+  
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(12px);
+    border-radius: 22px;
+    padding: 28px 34px;
+    box-shadow: 0 8px 24px rgba(180, 150, 200, 0.18);
+  
+    animation: fadeUp 0.6s ease-out;
+  }
+  
+  /* ------------------------------
+     GRID LAYOUT FOR BUTTONS
+  ------------------------------ */
+  
+  #ui-container {
+    display: grid;
+    grid-template-columns: repeat(3, auto); /* 3 buttons per row */
+    grid-template-rows: repeat(2, auto);    /* 2 rows */
+    gap: 14px 18px;                          /* row gap, column gap */
+    justify-items: center;
+    align-items: center;
+  
+    animation: softPop 0.4s ease-out;
+  }
+  
+  /* ------------------------------
+     BUTTONS (Pastel Soft Buttons)
+  ------------------------------ */
+  
+  button {
+    background: #FFEFF7;
+    border: 2px solid #F4DCE8;
+    color: #4A4458;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+    box-shadow: 0 2px 6px rgba(200, 150, 200, 0.15);
+  
+    animation: fadeUp 0.5s ease-out;
+  }
+  
+  button:hover {
+    background: #FDE6F2;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(200, 150, 200, 0.25);
+  }
+  
+  button:active {
+    transform: translateY(0px);
+    box-shadow: 0 2px 6px rgba(200, 150, 200, 0.15);
+  }
+  
+  /* ------------------------------
+     CONNECT BUTTON (Mint Variant)
+  ------------------------------ */
+  
+  button.connect {
+    background: #E8FFF4;
+    border-color: #CFF7E4;
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 10;
+  }
+  
+  button.connect:hover {
+    background: #DFFBEF;
+  }
+  

@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Arduino Code Snippet Formatting</title>
+    <style> 
+
+      .keyword { color: #569CD6; font-weight: bold; }
+      .comment { color: #6A9955; font-style: italic; }
+      .number { color: #B5CEA8; }
+      .function { color: #FF8303; }
+    </style>
+    </head>
+    <body>
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+
+
+
+    <title>Athena Ortega's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Athena Ortega's Final Project</h1>
+    <div class="header">
+    
+      <img src= "A7.gif"/>
+      </img>
+      <p>For my Final Project, I created a prototype for PomoLight, a Pomodoro study timer and lamp!</p>
+      <br>
+
+      <h2>Here is all the documentation for My Final Project!</h2>
+
+
+
+      <h3>Bill of Materials: </h3>
+      <h4>Lantern Enclosure Materials</h4>
+      <p> Washi paper for the exterior, for aesthetic purposes. Hot glue to assemble the enclosure materials.
+      </p>
+      <h4>Hardware:</h4>
+      <p> Breadboard, IR Sensor, Remote Control, LED Diodes, Wires, Resistors, 100Ω & 220Ω, Arduino </p>
+    
+      
+      <h3>Calculation:</h3>
+      <img src= "A7_Calculation.png" />
+      <p> Above are my calculations for the current, which determined the value of resistors I used.
+        For the light strip, the calculated resistance, based on a recommended 20mA current draw from each pin, is 100Ω
+        for the blue LED and 220Ω for the green LED.
+      </p>
+
+  
+
+      <h3>Schematic and Overview of Circuit:</h3>
+      <img src="A7_Schematic.png" />
+      <p> Here is a photo of the final circuit I put together, based on my calculations. 
+      </p>
+
+
+      <h3>Arduino Code</h3>
+        <p>
+            <pre><code>
+        <span class="comment">// Include IR remote library</span>
+        <span class="keyword">#include</span> &lt;IRremote.h&gt;
+        
+        <span class="comment">// IR REMOTE SETUP</span>
+        
+        <span class="comment">// IR receiver pin</span>
+        <span class="keyword">const int</span> irPin = <span class="number">6</span>;
+        
+        <span class="comment">// Create IR receiver object</span>
+        IRrecv irrecv(irPin);
+        
+        <span class="comment">// Storage for decoded IR results</span>
+        decode_results results;
+        
+        <span class="comment">// Define IR codes for your remote buttons</span>
+        <span class="keyword">#define</span> IR_START <span class="number">0xFF30CF</span>   <span class="comment">// button 1</span>
+        <span class="keyword">#define</span> IR_PAUSE <span class="number">0xFF18E7</span>   <span class="comment">// button 2</span>
+        <span class="keyword">#define</span> IR_END   <span class="number">0xFF7A85</span>   <span class="comment">// button 3</span>
+        
+        
+        <span class="comment">// DEFINING LED PINS</span>
+        
+        <span class="comment">// Blue LED pins</span>
+        <span class="keyword">const int</span> blue1 = <span class="number">7</span>;
+        <span class="keyword">const int</span> blue2 = <span class="number">8</span>;
+        <span class="keyword">const int</span> blue3 = <span class="number">9</span>;
+        
+        <span class="comment">// Green LED pins</span>
+        <span class="keyword">const int</span> green1 = <span class="number">10</span>;
+        <span class="keyword">const int</span> green2 = <span class="number">11</span>;
+        <span class="keyword">const int</span> green3 = <span class="number">13</span>;
+        
+        
+        <span class="comment">// SETUP</span>
+        
+        <span class="function">void</span> <span class="function">setup</span>() {
+        
+            <span class="comment">// Start serial communication</span>
+            Serial.begin(<span class="number">9600</span>);
+        
+            <span class="comment">// Enable IR receiver</span>
+            irrecv.enableIRIn();
+        
+            <span class="comment">// Set blue LED pins as outputs</span>
+            pinMode(blue1, OUTPUT);
+            pinMode(blue2, OUTPUT);
+            pinMode(blue3, OUTPUT);
+        
+            <span class="comment">// Set green LED pins as outputs</span>
+            pinMode(green1, OUTPUT);
+            pinMode(green2, OUTPUT);
+            pinMode(green3, OUTPUT);
+        
+            <span class="comment">// Turn all LEDs off at startup</span>
+            allOff();
+        }
+        
+        
+        <span class="comment">// MAIN LOOP</span>
+        
+        <span class="function">void</span> <span class="function">loop</span>() {
+        
+            <span class="comment">// IR → p5.js communication</span>
+        
+            <span class="comment">// If an IR signal is received</span>
+            <span class="keyword">if</span> (irrecv.decode(&results)) {
+        
+            <span class="comment">// Store the IR code</span>
+            <span class="keyword">unsigned long</span> code = results.value;
+        
+            <span class="comment">// Prepare IR receiver for next signal</span>
+            irrecv.resume();
+        
+            <span class="comment">// If START button pressed</span>
+            <span class="keyword">if</span> (code == IR_START) {
+                Serial.println(<span class="string">"START"</span>);
+                startLights();
+            }
+        
+            <span class="comment">// If PAUSE button pressed</span>
+            <span class="keyword">if</span> (code == IR_PAUSE) {
+                Serial.println(<span class="string">"PAUSE"</span>);
+                pauseLights();
+            }
+        
+            <span class="comment">// If END button pressed</span>
+            <span class="keyword">if</span> (code == IR_END) {
+                Serial.println(<span class="string">"END"</span>);
+                allOff();
+            }
+            }
+        
+        
+            <span class="comment">// p5.js → Arduino communication</span>
+        
+            <span class="comment">// If serial data is available</span>
+            <span class="keyword">if</span> (Serial.available()) {
+        
+            <span class="comment">// Read incoming command</span>
+            String cmd = Serial.readStringUntil(<span class="string">'\n'</span>);
+        
+            <span class="comment">// Execute matching command</span>
+            <span class="keyword">if</span> (cmd == <span class="string">"START"</span>) startLights();
+            <span class="keyword">if</span> (cmd == <span class="string">"PAUSE"</span>) pauseLights();
+            <span class="keyword">if</span> (cmd == <span class="string">"END"</span>)   allOff();
+            }
+        }
+        
+        
+        <span class="comment">// LED CONTROL FUNCTIONS</span>
+        
+        <span class="comment">// Turn all LEDs off</span>
+        <span class="function">void</span> <span class="function">allOff</span>() {
+            digitalWrite(blue1, LOW);
+            digitalWrite(blue2, LOW);
+            digitalWrite(blue3, LOW);
+        
+            digitalWrite(green1, LOW);
+            digitalWrite(green2, LOW);
+            digitalWrite(green3, LOW);
+        }
+        
+        <span class="comment">// Turn on green LEDs (START state)</span>
+        <span class="function">void</span> <span class="function">startLights</span>() {
+            digitalWrite(blue1, LOW);
+            digitalWrite(blue2, LOW);
+            digitalWrite(blue3, LOW);
+        
+            digitalWrite(green1, HIGH);
+            digitalWrite(green2, HIGH);
+            digitalWrite(green3, HIGH);
+        }
+        
+        <span class="comment">// Turn on blue LEDs (PAUSE state)</span>
+        <span class="function">void</span> <span class="function">pauseLights</span>() {
+            digitalWrite(green1, LOW);
+            digitalWrite(green2, LOW);
+            digitalWrite(green3, LOW);
+        
+            digitalWrite(blue1, HIGH);
+            digitalWrite(blue2, HIGH);
+            digitalWrite(blue3, HIGH);
+        }
+            </code></pre>
+        </p>
+        
+
+   
+    <h3>p5.js Code</h3>
+
+        <p>
+        <pre><code>
+        <span class="comment">// Base background color</span>
+        <span class="keyword">const</span> pastelBG = <span class="string">"#F7F3FF"</span>;
+        
+        <span class="comment">// Text color for UI</span>
+        <span class="keyword">const</span> pastelText = <span class="string">"#4A4458"</span>;
+        
+        <span class="comment">// Overlay colors for lamp states</span>
+        <span class="keyword">const</span> overlayStart = <span class="string">"rgba(180, 255, 200, 0.35)"</span>;
+        <span class="keyword">const</span> overlayPause = <span class="string">"rgba(180, 210, 255, 0.35)"</span>;
+        <span class="keyword">const</span> overlayEnd   = <span class="string">"rgba(200, 200, 200, 0.25)"</span>;
+        
+        
+        <span class="comment">// SERIAL CONFIG</span>
+        
+        <span class="comment">// Baud rate for Arduino communication</span>
+        <span class="keyword">const</span> BAUD_RATE = <span class="number">9600</span>;
+        
+        <span class="comment">// Serial port + connect button reference</span>
+        <span class="keyword">let</span> port, connectBtn;
+        
+        
+        <span class="comment">// Current lamp mode</span>
+        <span class="keyword">let</span> mode = <span class="string">"OFF"</span>;
+        
+        <span class="comment">// Current UI state</span>
+        <span class="keyword">let</span> state = <span class="string">"ASK_STUDY"</span>;
+        
+        <span class="comment">// Option lists for study, break, sessions</span>
+        <span class="keyword">let</span> studyOptions   = [<span class="number">15</span>, <span class="number">20</span>, <span class="number">25</span>, <span class="number">30</span>, <span class="number">45</span>, <span class="number">60</span>];
+        <span class="keyword">let</span> breakOptions   = [<span class="number">3</span>, <span class="number">5</span>, <span class="number">10</span>, <span class="number">15</span>];
+        <span class="keyword">let</span> sessionOptions = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>];
+        
+        <span class="comment">// Indexes for selected options</span>
+        <span class="keyword">let</span> studyIndex = <span class="number">0</span>;
+        <span class="keyword">let</span> breakIndex = <span class="number">0</span>;
+        <span class="keyword">let</span> sessionIndex = <span class="number">0</span>;
+        
+        <span class="comment">// Session tracking</span>
+        <span class="keyword">let</span> totalSessions = <span class="number">0</span>;
+        <span class="keyword">let</span> currentSession = <span class="number">0</span>;
+        
+        
+        <span class="comment">// TIMER</span>
+        
+        <span class="comment">// Countdown timer value</span>
+        <span class="keyword">let</span> timer = <span class="number">0</span>;
+        
+        <span class="comment">// Whether timer is active</span>
+        <span class="keyword">let</span> timerRunning = <span class="keyword">false</span>;
+        
+        
+        <span class="comment">// BUTTONS</span>
+        
+        <span class="comment">// UI button references</span>
+        <span class="keyword">let</span> selectBtn, startBtn, pauseBtn, endBtn;
+        <span class="keyword">let</span> plusBtn, minusBtn;
+        
+        
+        <span class="comment">// SETUP</span>
+        <span class="function">function</span> <span class="function">setup</span>() {
+        
+          <span class="comment">// Create Connect button (always on top)</span>
+          connectBtn = createButton(<span class="string">"Connect to Arduino"</span>);
+          connectBtn.position(<span class="number">10</span>, <span class="number">10</span>);
+          connectBtn.class(<span class="string">"connect"</span>);
+          connectBtn.mouseClicked(onConnectButtonClicked);
+        
+          <span class="comment">// Initialize serial system</span>
+          setupSerial();
+        
+          <span class="comment">// Create canvas behind UI</span>
+          <span class="keyword">let</span> cnv = createCanvas(windowWidth, windowHeight);
+          cnv.style(<span class="string">"z-index"</span>, <span class="string">"-1"</span>);
+        
+          <span class="comment">// Text styling for p5 UI</span>
+          textFont(<span class="string">"system-ui"</span>, <span class="number">45</span>);
+          textStyle(BOLD);
+          textAlign(CENTER, CENTER);
+        
+        
+          <span class="comment">// BUTTONS FOR TIMER + SESSION SETUP</span>
+        
+          minusBtn = createButton(<span class="string">"–"</span>);
+          minusBtn.parent(<span class="string">"ui-container"</span>);
+          minusBtn.mouseClicked(() => adjustValue(-<span class="number">1</span>));
+        
+          plusBtn = createButton(<span class="string">"+"</span>);
+          plusBtn.parent(<span class="string">"ui-container"</span>);
+          plusBtn.mouseClicked(() => adjustValue(<span class="number">1</span>));
+        
+          selectBtn = createButton(<span class="string">"Select"</span>);
+          selectBtn.parent(<span class="string">"ui-container"</span>);
+          selectBtn.mouseClicked(() => handleSelect());
+        
+          startBtn = createButton(<span class="string">"Start"</span>);
+          startBtn.parent(<span class="string">"ui-container"</span>);
+          startBtn.mouseClicked(() => sendCommand(<span class="string">"START"</span>));
+        
+          pauseBtn = createButton(<span class="string">"Pause"</span>);
+          pauseBtn.parent(<span class="string">"ui-container"</span>);
+          pauseBtn.mouseClicked(() => sendCommand(<span class="string">"PAUSE"</span>));
+        
+          endBtn = createButton(<span class="string">"End"</span>);
+          endBtn.parent(<span class="string">"ui-container"</span>);
+          endBtn.mouseClicked(() => sendCommand(<span class="string">"END"</span>));
+        }
+        
+        
+        <span class="comment">// DRAW LOOP</span>
+        <span class="function">function</span> <span class="function">draw</span>() {
+        
+          <span class="comment">// Update connect button label</span>
+          <span class="keyword">const</span> portIsOpen = checkPort();
+        
+          <span class="comment">// Draw background</span>
+          background(pastelBG);
+        
+          <span class="comment">// Lamp overlay</span>
+          noStroke();
+          <span class="keyword">if</span> (mode === <span class="string">"START"</span>) fill(overlayStart);
+          <span class="keyword">else if</span> (mode === <span class="string">"PAUSE"</span>) fill(overlayPause);
+          <span class="keyword">else</span> fill(overlayEnd);
+          rect(<span class="number">0</span>, <span class="number">0</span>, width, height);
+        
+          <span class="comment">// Read serial messages</span>
+          readSerialMessages();
+        
+          <span class="comment">// Draw UI text</span>
+          drawUI();
+        
+        
+          <span class="comment">// POMODLIGHT TIMER</span>
+        
+          <span class="keyword">if</span> (timerRunning && frameCount % <span class="number">60</span> === <span class="number">0</span>) {
+            timer--;
+        
+            <span class="keyword">if</span> (timer <= <span class="number">0</span>) {
+              timerRunning = <span class="keyword">false</span>;
+        
+              <span class="comment">// Study → Break</span>
+              <span class="keyword">if</span> (state === <span class="string">"RUNNING"</span>) {
+                state = <span class="string">"BREAK"</span>;
+                timer = breakOptions[breakIndex] * <span class="number">60</span>;
+                timerRunning = <span class="keyword">true</span>;
+                sendCommand(<span class="string">"PAUSE"</span>);
+              }
+        
+              <span class="comment">// Break → Next session or Done</span>
+              <span class="keyword">else if</span> (state === <span class="string">"BREAK"</span>) {
+                currentSession++;
+        
+                <span class="keyword">if</span> (currentSession < totalSessions) {
+                  state = <span class="string">"RUNNING"</span>;
+                  timer = studyOptions[studyIndex] * <span class="number">60</span>;
+                  timerRunning = <span class="keyword">true</span>;
+                  sendCommand(<span class="string">"START"</span>);
+                } <span class="keyword">else</span> {
+                  state = <span class="string">"DONE"</span>;
+                  sendCommand(<span class="string">"END"</span>);
+                }
+              }
+            }
+          }
+        }
+        
+        
+        <span class="comment">// UI RENDERING</span>
+        <span class="function">function</span> <span class="function">drawUI</span>() {
+        
+          fill(pastelText);
+        
+          <span class="keyword">if</span> (state === <span class="string">"ASK_STUDY"</span>) {
+            text(<span class="string">"Study Duration:"</span>, width/2, height/2 - <span class="number">40</span>);
+            text(studyOptions[studyIndex] + <span class="string">" minutes"</span>, width/2, height/2);
+            <span class="keyword">return</span>;
+          }
+        
+          <span class="keyword">if</span> (state === <span class="string">"ASK_BREAK"</span>) {
+            text(<span class="string">"Break Duration:"</span>, width/2, height/2 - <span class="number">40</span>);
+            text(breakOptions[breakIndex] + <span class="string">" minutes"</span>, width/2, height/2);
+            <span class="keyword">return</span>;
+          }
+        
+          <span class="keyword">if</span> (state === <span class="string">"ASK_SESSIONS"</span>) {
+            text(<span class="string">"Number of Sessions:"</span>, width/2, height/2 - <span class="number">40</span>);
+            text(sessionOptions[sessionIndex], width/2, height/2);
+            <span class="keyword">return</span>;
+          }
+        
+          <span class="keyword">if</span> (state === <span class="string">"READY"</span>) {
+            text(<span class="string">"Ready to Start"</span>, width/2, height/2 - <span class="number">40</span>);
+            text(<span class="string">"Press Start or Remote Button 1"</span>, width/2, height/2);
+            <span class="keyword">return</span>;
+          }
+        
+          <span class="keyword">if</span> (state === <span class="string">"RUNNING"</span> || state === <span class="string">"BREAK"</span>) {
+            <span class="keyword">let</span> mins = floor(timer / <span class="number">60</span>);
+            <span class="keyword">let</span> secs = timer % <span class="number">60</span>;
+            text(nf(mins, <span class="number">2</span>) + <span class="string">":"</span> + nf(secs, <span class="number">2</span>), width/2, height/2);
+            text(<span class="string">`Session ${currentSession + 1} of ${totalSessions}`</span>, width/2, height/2 + <span class="number">60</span>);
+            <span class="keyword">return</span>;
+          }
+        
+          <span class="keyword">if</span> (state === <span class="string">"DONE"</span>) {
+            text(<span class="string">"All Sessions Complete!"</span>, width/2, height/2);
+            <span class="keyword">return</span>;
+          }
+        }
+        
+        
+        <span class="comment">// VALUE ADJUSTMENT</span>
+        <span class="function">function</span> <span class="function">adjustValue</span>(dir) {
+        
+          <span class="keyword">if</span> (state === <span class="string">"ASK_STUDY"</span>) {
+            studyIndex = (studyIndex + dir + studyOptions.length) % studyOptions.length;
+          }
+        
+          <span class="keyword">if</span> (state === <span class="string">"ASK_BREAK"</span>) {
+            breakIndex = (breakIndex + dir + breakOptions.length) % breakOptions.length;
+          }
+        
+          <span class="keyword">if</span> (state === <span class="string">"ASK_SESSIONS"</span>) {
+            sessionIndex = (sessionIndex + dir + sessionOptions.length) % sessionOptions.length;
+          }
+        }
+        
+        
+        <span class="comment">// SELECT BUTTON LOGIC</span>
+        <span class="function">function</span> <span class="function">handleSelect</span>() {
+        
+          <span class="keyword">if</span> (state === <span class="string">"ASK_STUDY"</span>) state = <span class="string">"ASK_BREAK"</span>;
+          <span class="keyword">else if</span> (state === <span class="string">"ASK_BREAK"</span>) state = <span class="string">"ASK_SESSIONS"</span>;
+          <span class="keyword">else if</span> (state === <span class="string">"ASK_SESSIONS"</span>) {
+        
+            totalSessions = sessionOptions[sessionIndex];
+            currentSession = <span class="number">0</span>;
+        
+            state = <span class="string">"READY"</span>;
+          }
+        }
+        
+        
+        <span class="comment">// SERIAL COMMUNICATION</span>
+        <span class="function">function</span> <span class="function">readSerialMessages</span>() {
+        
+          <span class="keyword">let</span> str = port.readUntil(<span class="string">"\n"</span>);
+          <span class="keyword">if</span> (str.length === <span class="number">0</span>) <span class="keyword">return</span>;
+        
+          str = str.trim();
+          console.log(<span class="string">"Incoming:"</span>, str);
+        
+          <span class="keyword">if</span> (str === <span class="string">"START"</span>) {
+            mode = <span class="string">"START"</span>;
+            <span class="keyword">if</span> (state === <span class="string">"READY"</span> || state === <span class="string">"BREAK"</span>) {
+              state = <span class="string">"RUNNING"</span>;
+              timer = studyOptions[studyIndex] * <span class="number">60</span>;
+              timerRunning = <span class="keyword">true</span>;
+            }
+          }
+        
+          <span class="keyword">if</span> (str === <span class="string">"PAUSE"</span>) {
+            mode = <span class="string">"PAUSE"</span>;
+            <span class="keyword">if</span> (state === <span class="string">"RUNNING"</span>) {
+              state = <span class="string">"BREAK"</span>;
+              timer = breakOptions[breakIndex] * <span class="number">60</span>;
+              timerRunning = <span class="keyword">true</span>;
+            }
+          }
+        
+          <span class="keyword">if</span> (str === <span class="string">"END"</span>) {
+            mode = <span class="string">"END"</span>;
+            timerRunning = <span class="keyword">false</span>;
+            <span class="keyword">if</span> (state !== <span class="string">"DONE"</span>) state = <span class="string">"READY"</span>;
+          }
+        }
+        
+        
+        <span class="comment">// SEND COMMANDS TO ARDUINO</span>
+        <span class="function">function</span> <span class="function">sendCommand</span>(cmd) {
+        
+          <span class="keyword">if</span> (port.opened()) {
+            port.write(cmd + <span class="string">"\n"</span>);
+            console.log(<span class="string">"Sent:"</span>, cmd);
+        
+            <span class="keyword">if</span> (cmd === <span class="string">"START"</span>) {
+              state = <span class="string">"RUNNING"</span>;
+              timer = studyOptions[studyIndex] * <span class="number">60</span>;
+              timerRunning = <span class="keyword">true</span>;
+            }
+        
+            <span class="keyword">if</span> (cmd === <span class="string">"PAUSE"</span>) {
+              state = <span class="string">"BREAK"</span>;
+              timer = breakOptions[breakIndex] * <span class="number">60</span>;
+              timerRunning = <span class="keyword">true</span>;
+            }
+        
+            <span class="keyword">if</span> (cmd === <span class="string">"END"</span>) {
+              timerRunning = <span class="keyword">false</span>;
+              state = <span class="string">"READY"</span>;
+            }
+          }
+        }
+        
+        
+        <span class="comment">// SERIAL SETUP</span>
+        <span class="function">function</span> <span class="function">setupSerial</span>() {
+        
+          port = createSerial();
+        
+          <span class="keyword">let</span> used = usedSerialPorts();
+          <span class="keyword">if</span> (used.length > <span class="number">0</span>) {
+            port.open(used[<span class="number">0</span>], BAUD_RATE);
+          }
+        }
+        
+        
+        <span class="comment">// CHECK PORT STATUS</span>
+        <span class
+      
+      
+      <br>
+      <h3>Technical Writeup</h3>
+      <br>
+      <p> Concept: The initial idea was to create a standalone study lamp that would have an LCD monitor 
+        that displays the menu, with options to adjust the study duration and session frequency.
+        However, I began to realize that I wanted to incorporate a web component because the Pomodoro 
+        sites that I like to use have webpages where I can better see the time left after a session. 
+        After all, the main point of this project was for me to create a light where users can see which
+        phase they are in during their study session.
+      </p>
+
+      <p> Ideation & Prototyping: I used wooden dowels and cardboard for the structure of the lamp itself,
+        but to hold the materials, I used hot glue and tape. If I had more time, I would have tried to come up
+        with ways to make the lamp look aesthetically pleasing, but I couldn't really figure that out in the short
+        time that I had. 
+        </p>
+     <br> 
+    <img src= "A7_Final_Prototype.png"/>
+
+    <p>
+        Another consideration is that if I were to iterate on this project more, I'd want to
+        3-D print the frame of the base, but still preserve the paper lantern shell for the light. Lastly, 
+        I would want to see how I'd incorporate buttons into the actual prototype itself, but for now, I have
+        implemented the use of a remote control, which communicates with the IR sensor.
+      </p>
+
+      <p> How it works: To start a study session, using the webpage for PomoLight, the user will toggle through
+        and select their preferred study duration. Then, they will choose the break duration, and the frequency
+        of the sessions. Then, clicking either "Start" on the screen or using the IR remote by pressing button 1
+        will begin the session. From there, the user can control whether the session pauses or ends. 2 is pressed
+        for a break / pause, and 3 is pressed to end the session. 
+      </p>
+
+      <br> 
+      <p> Challenges: I wanted to use an LED Strip at first, but I had trouble getting it to work. I also found that 
+        the diodes were easier to incorporate into the project, since the light emitted from the lamp does not need
+         to be that bright. Other difficulties encountered were the logic to connect the remote to the sensor,
+         but I was able to resolve this by using serial monitor to check what codes represent each of the buttons 
+        I needed for the project (1, 2, and 3). 
+
+      <br> 
+      <p> Considerations: For future iteration, I would want to incorporate a speaker that buzzes when the user is 
+        either at the break time or at the end of their session. This is a stretch goal I wasn't able to implement
+        but would be interested in doing if I had more time. I would also be interested in expanding the capabilities of
+        the remote, for different features of the PomoLight. I'd want to map more of the buttons to future functions 
+        and features that are implemented. An example would be using the volume buttons on the remote to control the
+        volume of the alarm beeping, once that is implemented.
+      </p>
+
+      <h3>Demo!</h3>
+      <video src="A7_video.mp4" controls width="600" height="400">
+      </video>
+
+      <h4>AI Usage </h4>
+      <p> AI was used only to format the Arduino code to be readable on this webpage. </p>
+      <br>
+
+    </div>
+  </body>
+</html>
